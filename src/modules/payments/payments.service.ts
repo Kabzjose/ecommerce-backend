@@ -2,6 +2,8 @@ import { paymentsRepository } from './payments.repository.js';
 import { bookingsRepository } from '../bookings/bookings.repository.js';
 import { initiateStkPush } from '../../lib/mpesa.js';
 import { initializeTransaction, verifyTransaction } from '../../lib/paystack.js';
+import { notificationsService } from '../notifications/notifications.service.js';
+import { templates } from '../notifications/templates.js';
 import { logger } from '../../lib/logger.js';
 import { BadRequestError, NotFoundError } from '../../lib/errors.js';
 
@@ -42,7 +44,6 @@ export const paymentsService = {
       const result = await initializeTransaction({
         email,
         amountKes: amount,
-        // Our own payment id becomes Paystack's reference — guarantees uniqueness, easy to look up
         reference: payment.id,
       });
       await paymentsRepository.setPaystackDetails(payment.id, {
@@ -65,9 +66,8 @@ export const paymentsService = {
   },
 
   /**
-   * Called by Safaricom's servers — this is the source of truth for M-Pesa payment outcome.
-   * The initial initiateStkPush response only confirms Safaricom received the request;
-   * this callback is the only place we learn if the customer actually approved it.
+   * Called by Safaricom's servers — source of truth for M-Pesa payment outcome.
+   * Always responds 200 to Safaricom first (handled by controller), processes async.
    */
   async handleMpesaCallback(body: unknown) {
     const stkCallback = (body as any)?.Body?.stkCallback;
@@ -86,7 +86,7 @@ export const paymentsService = {
       return;
     }
 
-    // Idempotency guard — Safaricom sometimes retries callbacks if we don't respond fast enough
+    // Idempotency guard — Safaricom sometimes retries if we don't respond fast enough
     if (payment.status !== 'PENDING') {
       logger.info({ checkoutRequestId }, 'Callback for already-processed payment, ignoring');
       return;
@@ -98,26 +98,43 @@ export const paymentsService = {
       const receipt = items.find((i) => i.Name === 'MpesaReceiptNumber')?.Value as
         | string
         | undefined;
+
       await paymentsRepository.markResult(payment.id, 'SUCCESS', { mpesaReceiptNumber: receipt });
-      await bookingsRepository.updateStatus(payment.bookingId, 'PENDING', 'Payment confirmed');
+      const booking = await bookingsRepository.updateStatus(
+        payment.bookingId,
+        'PENDING',
+        'Payment confirmed',
+      );
+
+      // SMS after DB write — a provider outage can't roll back the payment confirmation
+      await notificationsService.notify({
+        phone: payment.mpesaPhone!,
+        message: templates.paymentConfirmed(booking.id, payment.amount),
+        bookingId: booking.id,
+      });
+
       logger.info({ bookingId: payment.bookingId, receipt }, 'M-Pesa payment succeeded');
     } else {
       await paymentsRepository.markResult(payment.id, 'FAILED', { failureReason: resultDesc });
-      await bookingsRepository.updateStatus(
+      const booking = await bookingsRepository.updateStatus(
         payment.bookingId,
         'CANCELLED',
         `Payment failed: ${resultDesc}`,
       );
+
+      await notificationsService.notify({
+        phone: payment.mpesaPhone!,
+        message: templates.bookingCancelled(booking.id, 'Payment failed'),
+        bookingId: booking.id,
+      });
+
       logger.info({ bookingId: payment.bookingId, resultDesc }, 'M-Pesa payment failed');
     }
   },
 
   /**
    * Called by Paystack's webhook. Signature must be verified by the controller before calling here.
-   *
-   * We re-verify the transaction directly with Paystack's API rather than trusting the webhook
-   * payload alone — "belt and suspenders": signature check proves it came from Paystack,
-   * re-verification proves the data is still accurate right now.
+   * Re-verifies with Paystack API (belt + suspenders) before marking payment as succeeded.
    */
   async handlePaystackWebhook(event: unknown) {
     const evt = event as any;
@@ -145,7 +162,19 @@ export const paymentsService = {
     }
 
     await paymentsRepository.markResult(payment.id, 'SUCCESS', {});
-    await bookingsRepository.updateStatus(payment.bookingId, 'PENDING', 'Payment confirmed');
+    const booking = await bookingsRepository.updateStatus(
+      payment.bookingId,
+      'PENDING',
+      'Payment confirmed',
+    );
+
+    // Notify the customer via their booking's recipientPhone (card flow has no mpesaPhone)
+    await notificationsService.notify({
+      phone: booking.recipientPhone,
+      message: templates.paymentConfirmed(booking.id, payment.amount),
+      bookingId: booking.id,
+    });
+
     logger.info({ bookingId: payment.bookingId, reference }, 'Card payment succeeded');
   },
 

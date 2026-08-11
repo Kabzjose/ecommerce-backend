@@ -11,6 +11,7 @@ import { pricingRouter } from './modules/pricing/pricing.routes.js';
 import { bookingsRouter } from './modules/bookings/bookings.routes.js';
 import { usersRouter } from './modules/users/users.routes.js';
 import { paymentsRouter } from './modules/payments/payments.routes.js';
+import { notificationsRouter } from './modules/notifications/notifications.routes.js';
 
 // Exported without side effects so tests can import it without binding to a port.
 export const app = express();
@@ -48,6 +49,7 @@ app.use('/api/pricing', pricingRouter);
 app.use('/api/bookings', bookingsRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/payments', paymentsRouter);
+app.use('/api/notifications', notificationsRouter);
 
 // errorHandler must be last — Express routes errors to 4-arg middleware registered at the end.
 app.use(errorHandler);

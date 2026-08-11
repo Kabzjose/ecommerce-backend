@@ -1,12 +1,14 @@
 import { bookingsRepository } from './bookings.repository.js';
 import { pricingService } from '../pricing/pricing.service.js';
 import { paymentsService } from '../payments/payments.service.js';
+import { usersRepository } from '../users/users.repository.js';
+import { notificationsService } from '../notifications/notifications.service.js';
+import { templates } from '../notifications/templates.js';
 import { BadRequestError, ForbiddenError, NotFoundError } from '../../lib/errors.js';
 import type { CreateBookingInput } from './bookings.schema.js';
 import type { BookingStatus, Role } from '@prisma/client';
 
-// State machine — the single source of truth for legal lifecycle transitions.
-// Illegal jumps (e.g. PENDING → DELIVERED) are rejected before touching the DB.
+// State machine — single source of truth for legal lifecycle transitions.
 const ALLOWED_TRANSITIONS: Record<BookingStatus, BookingStatus[]> = {
   AWAITING_PAYMENT: ['PENDING', 'CANCELLED'], // system-driven only — set by payment callback
   PENDING: ['CONFIRMED', 'CANCELLED'],
@@ -19,7 +21,6 @@ const ALLOWED_TRANSITIONS: Record<BookingStatus, BookingStatus[]> = {
 
 export const bookingsService = {
   async create(customerId: string, input: CreateBookingInput) {
-    // Always derive the price from the live pricing service — no client-supplied price accepted
     const quote = await pricingService.calculateQuote({
       pickupZoneId: input.pickupZoneId,
       dropoffZoneId: input.dropoffZoneId,
@@ -27,7 +28,7 @@ export const bookingsService = {
       weightKg: input.weightKg,
     });
 
-    // Explicit field list — payerPhone is input-only and must not reach the Booking model
+    // Explicit field list — payerPhone/payerEmail are input-only; must not reach the Booking model
     const booking = await bookingsRepository.create({
       customerId,
       recipientName: input.recipientName,
@@ -42,7 +43,7 @@ export const bookingsService = {
       price: quote.price,
     });
 
-    // Branch on payment method — Zod .refine() above guarantees the right field is present
+    // Branch on payment method — Zod .refine() guarantees the right field is present
     const payment =
       input.paymentMethod === 'MPESA'
         ? await paymentsService.initiateMpesa(booking.id, input.payerPhone!, quote.price)
@@ -53,11 +54,8 @@ export const bookingsService = {
 
   async getById(bookingId: string, requester: { id: string; role: Role }) {
     const booking = await bookingsRepository.findById(bookingId);
-    if (!booking) {
-      throw new NotFoundError('Booking not found');
-    }
+    if (!booking) throw new NotFoundError('Booking not found');
 
-    // Fine-grained access check: resource-level, not just role-level
     const isOwner = booking.customerId === requester.id;
     const isAssignedRider = booking.riderId === requester.id;
     const isStaff = requester.role === 'ADMIN';
@@ -113,9 +111,7 @@ export const bookingsService = {
     requester: { id: string; role: Role },
   ) {
     const booking = await bookingsRepository.findById(bookingId);
-    if (!booking) {
-      throw new NotFoundError('Booking not found');
-    }
+    if (!booking) throw new NotFoundError('Booking not found');
 
     const isAssignedRider = booking.riderId === requester.id;
     const isStaff = requester.role === 'ADMIN';
@@ -130,14 +126,33 @@ export const bookingsService = {
       );
     }
 
-    return bookingsRepository.updateStatus(bookingId, newStatus, note);
+    const updated = await bookingsRepository.updateStatus(bookingId, newStatus, note);
+
+    // SMS fires AFTER the DB write — provider outage can't roll back a valid status change
+    const customer = await usersRepository.findById(booking.customerId);
+    const messageMap: Partial<Record<BookingStatus, string>> = {
+      PICKED_UP: templates.pickedUp(booking.id),
+      IN_TRANSIT: templates.inTransit(booking.id),
+      DELIVERED: templates.delivered(booking.id),
+      CANCELLED: templates.bookingCancelled(booking.id, note ?? 'Cancelled'),
+    };
+    const message = messageMap[newStatus];
+    if (message && customer) {
+      await notificationsService.notify({
+        phone: customer.phone,
+        message,
+        bookingId: booking.id,
+        userId: customer.id,
+      });
+    }
+
+    return updated;
   },
 
   async assignRider(bookingId: string, riderId: string) {
     const booking = await bookingsRepository.findById(bookingId);
-    if (!booking) {
-      throw new NotFoundError('Booking not found');
-    }
+    if (!booking) throw new NotFoundError('Booking not found');
+
     if (booking.status !== 'PENDING' && booking.status !== 'CONFIRMED') {
       throw new BadRequestError('Can only assign a rider to a pending or confirmed booking');
     }
@@ -149,7 +164,22 @@ export const bookingsService = {
     }
 
     await bookingsRepository.assignRider(bookingId, riderId);
-    // Auto-confirm on rider assignment so the rider knows it's ready to pick up
-    return bookingsRepository.updateStatus(bookingId, 'CONFIRMED', 'Rider assigned');
+    const updated = await bookingsRepository.updateStatus(bookingId, 'CONFIRMED', 'Rider assigned');
+
+    // Notify the customer that their rider is confirmed
+    const [customer, riderFull] = await Promise.all([
+      usersRepository.findById(booking.customerId),
+      usersRepository.findById(riderId),
+    ]);
+    if (customer && riderFull) {
+      await notificationsService.notify({
+        phone: customer.phone,
+        message: templates.riderAssigned(booking.id, riderFull.name),
+        bookingId: booking.id,
+        userId: customer.id,
+      });
+    }
+
+    return updated;
   },
 };

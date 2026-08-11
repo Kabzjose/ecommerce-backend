@@ -23,6 +23,10 @@ const envSchema = z.object({
   PAYSTACK_SECRET_KEY: z.string().default(''),
   PAYSTACK_PUBLIC_KEY: z.string().default(''),  
   PAYSTACK_CALLBACK_URL: z.string().default('https://placeholder.example.com/api/payments/paystack/callback'),
+  // Africa's Talking SMS
+  AT_USERNAME: z.string().default('sandbox'),
+  AT_API_KEY: z.string().default(''),
+  AT_SENDER_ID: z.string().optional(),
 });
 
 const parsed = envSchema.safeParse(process.env);

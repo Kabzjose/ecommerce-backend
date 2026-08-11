@@ -173,3 +173,27 @@ model Payment {
   updatedAt DateTime @updatedAt
   @@map("payments")
 }
+
+enum NotificationChannel {
+  SMS
+}
+
+enum NotificationStatus {
+  SENT
+  FAILED
+}
+
+// Intentionally no @relation — log records must survive booking/user deletion
+model NotificationLog {
+  id        String             @id @default(uuid())
+  bookingId String?
+  userId    String?
+  channel   NotificationChannel
+  recipient String
+  message   String
+  status    NotificationStatus
+  errorMsg  String?
+  createdAt DateTime           @default(now())
+
+  @@map("notifications_log")
+}
