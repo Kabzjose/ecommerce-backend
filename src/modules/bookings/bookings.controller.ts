@@ -8,10 +8,7 @@ export const bookingsController = {
     const result = await bookingsService.create(req.user!.id, req.body);
     res.status(201).json({
       booking: result.booking,
-      payment: {
-        paymentId: result.payment.paymentId,
-        message: result.payment.customerMessage,
-      },
+      payment: result.payment,
     });
   },
 

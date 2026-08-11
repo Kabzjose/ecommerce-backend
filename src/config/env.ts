@@ -21,6 +21,7 @@ const envSchema = z.object({
   MPESA_CALLBACK_URL: z.string().default('https://placeholder.example.com/api/payments/mpesa/callback'),
   // Paystack — optional at startup; throws at runtime if card payment attempted without real values
   PAYSTACK_SECRET_KEY: z.string().default(''),
+  PAYSTACK_PUBLIC_KEY: z.string().default(''),  
   PAYSTACK_CALLBACK_URL: z.string().default('https://placeholder.example.com/api/payments/paystack/callback'),
 });
 
