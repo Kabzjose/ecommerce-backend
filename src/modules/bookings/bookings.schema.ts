@@ -1,19 +1,32 @@
 import { z } from 'zod';
 
 export const createBookingSchema = z.object({
-  body: z.object({
-    recipientName: z.string().min(2).max(100),
-    recipientPhone: z.string().regex(/^\+254\d{9}$/, 'Phone must be in format +254XXXXXXXXX'),
-    payerPhone: z.string().regex(/^\+254\d{9}$/, 'Phone must be in format +254XXXXXXXXX'),
-    pickupZoneId: z.string().uuid(),
-    pickupAddress: z.string().min(5).max(255),
-    dropoffZoneId: z.string().uuid(),
-    dropoffAddress: z.string().min(5).max(255),
-    packageType: z.enum(['DOCUMENT', 'PARCEL', 'FRAGILE', 'ELECTRONICS', 'OTHER']),
-    weightKg: z.coerce.number().positive().max(500),
-    specialInstructions: z.string().max(500).optional(),
-  }),
+  body: z
+    .object({
+      recipientName: z.string().min(2).max(100),
+      recipientPhone: z.string().regex(/^\+254\d{9}$/, 'Phone must be in format +254XXXXXXXXX'),
+      paymentMethod: z.enum(['MPESA', 'CARD']),
+      // payerPhone only required for MPESA, payerEmail only for CARD — enforced by .refine() below
+      payerPhone: z.string().regex(/^\+254\d{9}$/, 'Phone must be in format +254XXXXXXXXX').optional(),
+      payerEmail: z.string().email().optional(),
+      pickupZoneId: z.string().uuid(),
+      pickupAddress: z.string().min(5).max(255),
+      dropoffZoneId: z.string().uuid(),
+      dropoffAddress: z.string().min(5).max(255),
+      packageType: z.enum(['DOCUMENT', 'PARCEL', 'FRAGILE', 'ELECTRONICS', 'OTHER']),
+      weightKg: z.coerce.number().positive().max(500),
+      specialInstructions: z.string().max(500).optional(),
+    })
+    .refine((data) => data.paymentMethod !== 'MPESA' || !!data.payerPhone, {
+      message: 'payerPhone is required when paymentMethod is MPESA',
+      path: ['payerPhone'],
+    })
+    .refine((data) => data.paymentMethod !== 'CARD' || !!data.payerEmail, {
+      message: 'payerEmail is required when paymentMethod is CARD',
+      path: ['payerEmail'],
+    }),
 });
+
 
 export const updateStatusSchema = z.object({
   params: z.object({

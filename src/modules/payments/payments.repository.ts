@@ -42,4 +42,25 @@ export const paymentsRepository = {
       data: { status, ...data },
     });
   },
+
+  setPaystackDetails(
+    paymentId: string,
+    data: { reference: string; accessCode: string; authUrl: string },
+  ) {
+    return prisma.payment.update({
+      where: { id: paymentId },
+      data: {
+        paystackReference: data.reference,
+        paystackAccessCode: data.accessCode,
+        paystackAuthUrl: data.authUrl,
+      },
+    });
+  },
+
+  findByPaystackReference(reference: string) {
+    return prisma.payment.findUnique({
+      where: { paystackReference: reference },
+      include: { booking: true },
+    });
+  },
 };

@@ -1,5 +1,6 @@
 import type { Request, Response } from 'express';
 import { paymentsService } from './payments.service.js';
+import { verifyWebhookSignature } from '../../lib/paystack.js';
 
 export const paymentsController = {
   /**
@@ -10,6 +11,25 @@ export const paymentsController = {
   async mpesaCallback(req: Request, res: Response) {
     await paymentsService.handleMpesaCallback(req.body);
     res.status(200).json({ ResultCode: 0, ResultDesc: 'Accepted' });
+  },
+
+  /**
+   * Public endpoint — Paystack calls this.
+   * Signature check happens here (not in service) because it needs raw HTTP request data.
+   * Always 200 after accepting; errors during processing are logged but not surfaced to Paystack.
+   */
+  async paystackWebhook(req: Request, res: Response) {
+    const signature = req.headers['x-paystack-signature'] as string | undefined;
+    const rawBody = (req as any).rawBody as Buffer;
+
+    if (!verifyWebhookSignature(rawBody, signature)) {
+      // Reject immediately — someone is calling our webhook without a valid signature
+      res.status(401).json({ error: { message: 'Invalid signature' } });
+      return;
+    }
+
+    await paymentsService.handlePaystackWebhook(req.body);
+    res.status(200).send('OK');
   },
 
   async getStatus(req: Request, res: Response) {

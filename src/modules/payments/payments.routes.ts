@@ -8,6 +8,9 @@ export const paymentsRouter = Router();
 // Public — Safaricom calls this; cannot carry our JWT
 paymentsRouter.post('/mpesa/callback', asyncHandler(paymentsController.mpesaCallback));
 
+// Public — Paystack calls this; signature verified inside the handler
+paymentsRouter.post('/paystack/webhook', asyncHandler(paymentsController.paystackWebhook));
+
 // Authenticated — customer polling their own payment status
 paymentsRouter.get(
   '/booking/:bookingId',

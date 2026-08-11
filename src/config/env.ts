@@ -12,19 +12,16 @@ const envSchema = z.object({
   JWT_REFRESH_EXPIRES_IN: z.string().default('7d'),
   // Leave undefined in development; set to your root domain (e.g. "chapchap.co.ke") in production.
   COOKIE_DOMAIN: z.string().optional(),
-  // M-Pesa Daraja
-  MPESA_CONSUMER_KEY: z.string(),
-  MPESA_CONSUMER_SECRET: z.string(),
-  MPESA_SHORTCODE: z.string(),
-  MPESA_PASSKEY: z.string(),
+  // M-Pesa Daraja — optional at startup; throws at runtime if payment attempted without real values
+  MPESA_CONSUMER_KEY: z.string().default(''),
+  MPESA_CONSUMER_SECRET: z.string().default(''),
+  MPESA_SHORTCODE: z.string().default('174379'),
+  MPESA_PASSKEY: z.string().default(''),
   MPESA_ENV: z.enum(['sandbox', 'production']).default('sandbox'),
-  MPESA_CALLBACK_URL: z.string().url(),
-
-  // Paystack
-  PAYSTACK_SECRET_KEY: z.string(),
-  PAYSTACK_PUBLIC_KEY: z.string(),
-  PAYSTACK_CALLBACK_URL: z.string().url(),
-
+  MPESA_CALLBACK_URL: z.string().default('https://placeholder.example.com/api/payments/mpesa/callback'),
+  // Paystack — optional at startup; throws at runtime if card payment attempted without real values
+  PAYSTACK_SECRET_KEY: z.string().default(''),
+  PAYSTACK_CALLBACK_URL: z.string().default('https://placeholder.example.com/api/payments/paystack/callback'),
 });
 
 const parsed = envSchema.safeParse(process.env);

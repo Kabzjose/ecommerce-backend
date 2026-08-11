@@ -19,7 +19,15 @@ app.use(helmet());
 // TODO: lock origin down to your frontend URL(s) in production instead of `true`.
 app.use(cors({ origin: true, credentials: true }));
 app.use(cookieParser());
-app.use(express.json());
+app.use(
+  express.json({
+    // Stash the raw bytes before parsing — needed for Paystack webhook HMAC verification.
+    // Re-serializing req.body would produce a different hash and break signature checks.
+    verify: (req, _res, buf) => {
+      (req as any).rawBody = buf;
+    },
+  }),
+);
 app.use(pinoHttp({ logger }));
 
 // 300 req / 15 min per IP across all /api routes.

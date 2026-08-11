@@ -42,12 +42,11 @@ export const bookingsService = {
       price: quote.price,
     });
 
-    // Immediately trigger STK push — if it fails, the service cancels the booking and throws
-    const payment = await paymentsService.initiateForBooking(
-      booking.id,
-      input.payerPhone,
-      quote.price,
-    );
+    // Branch on payment method — Zod .refine() above guarantees the right field is present
+    const payment =
+      input.paymentMethod === 'MPESA'
+        ? await paymentsService.initiateMpesa(booking.id, input.payerPhone!, quote.price)
+        : await paymentsService.initiateCard(booking.id, input.payerEmail!, quote.price);
 
     return { booking, payment };
   },
