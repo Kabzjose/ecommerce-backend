@@ -19,6 +19,12 @@ const envSchema = z.object({
   MPESA_PASSKEY: z.string(),
   MPESA_ENV: z.enum(['sandbox', 'production']).default('sandbox'),
   MPESA_CALLBACK_URL: z.string().url(),
+
+  // Paystack
+  PAYSTACK_SECRET_KEY: z.string(),
+  PAYSTACK_PUBLIC_KEY: z.string(),
+  PAYSTACK_CALLBACK_URL: z.string().url(),
+
 });
 
 const parsed = envSchema.safeParse(process.env);
