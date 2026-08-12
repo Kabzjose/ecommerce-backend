@@ -1,6 +1,12 @@
 import type { NextFunction, Request, Response } from 'express';
 import type { ZodSchema } from 'zod';
 
+type ValidatedRequestParts = {
+  body?: unknown;
+  query?: Request['query'];
+  params?: Request['params'];
+};
+
 // Validates { body, query, params } against the given Zod schema before the request reaches the controller.
 // On failure a ZodError is thrown and forwarded to errorHandler, which formats it into per-field messages.
 //
@@ -14,7 +20,7 @@ export function validate(schema: ZodSchema) {
         body: req.body,
         query: req.query,
         params: req.params,
-      });
+      }) as ValidatedRequestParts;
       // Write coerced/defaulted values back so controllers receive the right types
       if (parsed.body !== undefined) req.body = parsed.body;
       if (parsed.query !== undefined) req.query = parsed.query;

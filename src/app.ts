@@ -13,6 +13,7 @@ import { usersRouter } from './modules/users/users.routes.js';
 import { paymentsRouter } from './modules/payments/payments.routes.js';
 import { notificationsRouter } from './modules/notifications/notifications.routes.js';
 import { adminRouter } from './modules/admin/admin.routes.js';
+import { cartRouter } from './modules/cart/cart.routes.js';
 
 // Exported without side effects so tests can import it without binding to a port.
 export const app = express();
@@ -52,6 +53,7 @@ app.use('/api/users', usersRouter);
 app.use('/api/payments', paymentsRouter);
 app.use('/api/notifications', notificationsRouter);
 app.use('/api/admin', adminRouter);
+app.use('/api/cart', cartRouter);
 
 // errorHandler must be last — Express routes errors to 4-arg middleware registered at the end.
 app.use(errorHandler);
