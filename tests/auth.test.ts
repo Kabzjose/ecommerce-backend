@@ -133,14 +133,20 @@ describe('GET /api/auth/me', () => {
     expect(res.status).toBe(401);
   });
 
-  it('deactivated user cannot access profile — 401', async () => {
-    const user = await createUserDirect('CUSTOMER');
-    // Deactivate
-    await prisma.user.update({ where: { id: user.id }, data: { isActive: false } });
+  it('deactivated account cannot log in — 401', async () => {
+    // Register first so the password hash is stored correctly
+    await request.post('/api/auth/register').send({
+      name: 'Inactive User',
+      email: 'inactive@example.com',
+      phone: '+254755888999',
+      password: 'Password123!',
+    });
 
-    // Use a fresh login attempt (should fail on deactivated account)
+    // Deactivate via DB
+    await prisma.user.update({ where: { email: 'inactive@example.com' }, data: { isActive: false } });
+
     const res = await request.post('/api/auth/login').send({
-      email: user.email,
+      email: 'inactive@example.com',
       password: 'Password123!',
     });
 

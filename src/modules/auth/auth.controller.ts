@@ -1,5 +1,6 @@
 import type { Request, Response } from 'express';
 import { authService } from './auth.service.js';
+import { usersRepository } from '../users/users.repository.js';
 import { env } from '../../config/env.js';
 
 const REFRESH_COOKIE_NAME = 'refreshToken';
@@ -44,5 +45,11 @@ export const authController = {
     if (token) await authService.logout(token);
     res.clearCookie(REFRESH_COOKIE_NAME, { path: '/api/auth' });
     res.status(204).send();
+  },
+
+  async me(req: Request, res: Response) {
+    // req.user is populated by requireAuth middleware from the JWT sub claim
+    const user = await usersRepository.findById(req.user!.id);
+    res.json({ user });
   },
 };
