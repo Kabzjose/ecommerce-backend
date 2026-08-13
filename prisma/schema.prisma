@@ -73,6 +73,7 @@ model Zone {
   routesTo        ZoneRoute[] @relation("ToZone")
   pickupBookings  Booking[]   @relation("PickupZone")
   dropoffBookings Booking[]   @relation("DropoffZone")
+  orders          Order[]
 
   @@map("zones")
 }
@@ -118,6 +119,7 @@ model Booking {
   status BookingStatus @default(PENDING)
 
   statusHistory BookingStatusHistory[]
+  order         Order?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -150,10 +152,14 @@ enum PaymentStatus {
 }
 
 model Payment {
-  id     String @id @default(uuid())
+  id String @id @default(uuid())
 
-  bookingId String  @unique
-  booking   Booking @relation(fields: [bookingId], references: [id])
+  // Exactly one of bookingId or orderId will be set — enforced in application code
+  bookingId String?  @unique
+  booking   Booking? @relation(fields: [bookingId], references: [id])
+
+  orderId String? @unique
+  order   Order?  @relation(fields: [orderId], references: [id])
 
   method PaymentMethod
   amount Float
@@ -249,21 +255,35 @@ model CartItem {
 }
 
 enum OrderStatus {
-  PENDING
-  CONFIRMED
-  SHIPPED
-  DELIVERED
+  AWAITING_PAYMENT
+  PAID
   CANCELLED
 }
 
 model Order {
-  id          String      @id @default(uuid())
-  userId      String
-  user        User        @relation(fields: [userId], references: [id])
-  status      OrderStatus @default(PENDING)
-  totalAmount Float
+  id         String @id @default(uuid())
+  customerId String
+  customer   User   @relation(fields: [customerId], references: [id])
 
   items OrderItem[]
+
+  productsTotal Float
+  deliveryFee   Float
+  totalAmount   Float
+
+  status OrderStatus @default(AWAITING_PAYMENT)
+
+  recipientName  String
+  recipientPhone String
+  dropoffZoneId  String
+  dropoffZone    Zone   @relation(fields: [dropoffZoneId], references: [id])
+  dropoffAddress String
+
+  // Set after payment succeeds — links the order to its delivery booking
+  bookingId String?  @unique
+  booking   Booking? @relation(fields: [bookingId], references: [id])
+
+  payment Payment?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -272,16 +292,15 @@ model Order {
 }
 
 model OrderItem {
-  id        String  @id @default(uuid())
-  orderId   String
-  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  id      String @id @default(uuid())
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
   productId String
   product   Product @relation(fields: [productId], references: [id])
 
-  quantity    Int
-  priceAtTime Float   // snapshot of price at checkout — correct even if product price later changes
-
-  createdAt DateTime @default(now())
+  quantity  Int
+  unitPrice Float // snapshot of product price AT TIME OF ORDER — financial data must never use live price
 
   @@map("order_items")
 }

@@ -27,6 +27,10 @@ const envSchema = z.object({
   AT_USERNAME: z.string().default('sandbox'),
   AT_API_KEY: z.string().default(''),
   AT_SENDER_ID: z.string().optional(),
+  // Store pickup location — used by checkout to set the booking pickup point
+  // Get zone ID from: pnpm prisma studio → zones table → copy the row id
+  STORE_PICKUP_ZONE_ID: z.string().uuid().default('00000000-0000-0000-0000-000000000000'),
+  STORE_PICKUP_ADDRESS: z.string().default('ChapChap Warehouse, Enterprise Road, Industrial Area'),
 });
 
 const parsed = envSchema.safeParse(process.env);

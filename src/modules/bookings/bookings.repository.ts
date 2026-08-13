@@ -19,11 +19,31 @@ export const bookingsRepository = {
       data: {
         ...data,
         status: 'AWAITING_PAYMENT',
-        // Nested write — Prisma executes the status update + history log atomically
-        statusHistory: {
-          create: { status: 'AWAITING_PAYMENT' },
-        },
+        statusHistory: { create: { status: 'AWAITING_PAYMENT' } },
       },
+      include: { pickupZone: true, dropoffZone: true },
+    });
+  },
+
+  // Used by checkout flow — booking already has payment confirmed at order level
+  // so it skips AWAITING_PAYMENT and starts at the caller-specified status.
+  createAtStatus(
+    status: BookingStatus,
+    data: {
+      customerId: string;
+      recipientName: string;
+      recipientPhone: string;
+      pickupZoneId: string;
+      pickupAddress: string;
+      dropoffZoneId: string;
+      dropoffAddress: string;
+      packageType: PackageType;
+      weightKg: number;
+      price: number;
+    },
+  ) {
+    return prisma.booking.create({
+      data: { ...data, status, statusHistory: { create: { status } } },
       include: { pickupZone: true, dropoffZone: true },
     });
   },

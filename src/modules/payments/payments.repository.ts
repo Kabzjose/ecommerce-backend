@@ -2,6 +2,7 @@ import { prisma } from '../../config/db.js';
 import type { PaymentStatus } from '@prisma/client';
 
 export const paymentsRepository = {
+  // ─── Booking-linked payment ─────────────────────────────────────────────────
   create(data: {
     bookingId: string;
     method: 'MPESA' | 'CARD' | 'BANK';
@@ -11,6 +12,17 @@ export const paymentsRepository = {
     return prisma.payment.create({ data: { ...data, status: 'PENDING' } });
   },
 
+  // ─── Order-linked payment ───────────────────────────────────────────────────
+  createForOrder(data: {
+    orderId: string;
+    method: 'MPESA' | 'CARD';
+    amount: number;
+    mpesaPhone?: string;
+  }) {
+    return prisma.payment.create({ data: { ...data, status: 'PENDING' } });
+  },
+
+  // ─── Shared operations ──────────────────────────────────────────────────────
   setStkDetails(paymentId: string, data: { checkoutRequestId: string; merchantRequestId: string }) {
     return prisma.payment.update({
       where: { id: paymentId },
@@ -22,9 +34,10 @@ export const paymentsRepository = {
   },
 
   findByCheckoutRequestId(checkoutRequestId: string) {
+    // Include both booking and order so the webhook handler can branch on which is set
     return prisma.payment.findUnique({
       where: { mpesaCheckoutRequestId: checkoutRequestId },
-      include: { booking: true },
+      include: { booking: true, order: true },
     });
   },
 
@@ -37,10 +50,7 @@ export const paymentsRepository = {
     status: PaymentStatus,
     data: { mpesaReceiptNumber?: string; failureReason?: string },
   ) {
-    return prisma.payment.update({
-      where: { id },
-      data: { status, ...data },
-    });
+    return prisma.payment.update({ where: { id }, data: { status, ...data } });
   },
 
   setPaystackDetails(
@@ -58,9 +68,10 @@ export const paymentsRepository = {
   },
 
   findByPaystackReference(reference: string) {
+    // Include both so webhook handler can branch
     return prisma.payment.findUnique({
       where: { paystackReference: reference },
-      include: { booking: true },
+      include: { booking: true, order: true },
     });
   },
 };
