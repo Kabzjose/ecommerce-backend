@@ -62,6 +62,38 @@ async function main() {
   console.log('✅ Seeded admin account');
 }
 
+  const sampleProducts = [
+    {
+      name: 'Wireless Earbuds',
+      description: 'Bluetooth 5.0 earbuds with charging case and 24hr battery life',
+      price: 2500,
+      stockQuantity: 50,
+      category: 'Electronics',
+    },
+    {
+      name: 'Phone Case - Universal',
+      description: 'Shockproof silicone phone case, fits most smartphones',
+      price: 500,
+      stockQuantity: 200,
+      category: 'Accessories',
+    },
+    {
+      name: 'Notebook A5',
+      description: 'Hardcover ruled notebook, 200 pages, premium quality',
+      price: 350,
+      stockQuantity: 150,
+      category: 'Stationery',
+    },
+  ];
+
+  for (const p of sampleProducts) {
+    const existing = await prisma.product.findFirst({ where: { name: p.name } });
+    if (!existing) {
+      await prisma.product.create({ data: p });
+    }
+  }
+  console.log('✅ Seeded sample products');
+
   console.log('✅ Seeded zones and routes');
 }
 

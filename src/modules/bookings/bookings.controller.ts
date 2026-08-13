@@ -54,4 +54,16 @@ export const bookingsController = {
     const booking = await bookingsService.assignRider(String(req.params.id), req.body.riderId);
     res.json({ booking });
   },
+
+  // REST fallback for clients that can't use WebSockets (e.g. polling from a native app)
+  // Uses the same getById auth check — customer/rider/admin gating is already handled there
+  async getLocation(req: Request, res: Response) {
+    const booking = await bookingsService.getById(String(req.params.id), req.user!);
+    res.json({
+      bookingId: booking.id,
+      lat: booking.riderLat ?? null,
+      lng: booking.riderLng ?? null,
+      updatedAt: booking.riderLocatedAt ?? null,
+    });
+  },
 };

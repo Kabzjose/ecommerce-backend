@@ -34,6 +34,10 @@ bookingsRouter.get(
 // GET /api/bookings/:id — fine-grained resource-level access check happens inside the service
 bookingsRouter.get('/:id', asyncHandler(bookingsController.getOne));
 
+// GET /api/bookings/:id/location — REST fallback for the rider's last known position
+// Real-time updates are pushed via WebSocket (booking:subscribe + location:changed events)
+bookingsRouter.get('/:id/location', asyncHandler(bookingsController.getLocation));
+
 // PATCH /api/bookings/:id/status — state machine enforced in the service
 bookingsRouter.patch(
   '/:id/status',
