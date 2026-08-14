@@ -18,11 +18,17 @@ export const productsController = {
     const { category, search, page, limit } = req.query as unknown as {
       category?: string;
       search?: string;
-      page: number;
-      limit: number;
+      page?: string | number;
+      limit?: string | number;
     };
     const isAdmin = req.user?.role === 'ADMIN';
-    const result = await productsService.list({ category, search, page, limit, asAdmin: isAdmin });
+    const result = await productsService.list({
+      category,
+      search,
+      page: Number(page) || 1,
+      limit: Number(limit) || 20,
+      asAdmin: isAdmin,
+    });
     res.json(result);
   },
 
