@@ -22,8 +22,27 @@ import { ordersRouter } from './modules/orders/orders.routes.js';
 export const app = express();
 
 app.use(helmet());
-// TODO: lock origin down to your frontend URL(s) in production instead of `true`.
-app.use(cors({ origin: true, credentials: true }));
+const allowedOrigins = [
+  process.env.FRONTEND_URL || 'http://localhost:3000', 
+];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps, curl, or Postman)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    credentials: true,
+  })
+);
+
+
 app.use(cookieParser());
 app.use(
   express.json({
