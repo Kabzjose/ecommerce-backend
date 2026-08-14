@@ -20,14 +20,14 @@ productsRouter.get(
 );
 
 productsRouter.get(
-  '/:id',
-  validate(z.object({ params: z.object({ id: z.string().uuid() }) })),
-  asyncHandler(productsController.getOne),
+  '/categories',
+  asyncHandler(productsController.getCategories),
 );
 
 productsRouter.get(
-  '/categories',
-  asyncHandler(productsController.getCategories),
+  '/:id',
+  validate(z.object({ params: z.object({ id: z.string().uuid() }) })),
+  asyncHandler(productsController.getOne),
 );
 // ─── Admin-only routes ─────────────────────────────────────────────────────────
 productsRouter.post(

@@ -23,8 +23,15 @@ export function validate(schema: ZodSchema) {
       }) as ValidatedRequestParts;
       // Write coerced/defaulted values back so controllers receive the right types
       if (parsed.body !== undefined) req.body = parsed.body;
-      if (parsed.query !== undefined) req.query = parsed.query;
-      if (parsed.params !== undefined) req.params = parsed.params;
+      if (parsed.query !== undefined && req.query) {
+        for (const key of Object.keys(req.query)) {
+          delete req.query[key];
+        }
+        Object.assign(req.query, parsed.query);
+      }
+      if (parsed.params !== undefined && req.params) {
+        Object.assign(req.params, parsed.params);
+      }
       next();
     } catch (err) {
       next(err);
