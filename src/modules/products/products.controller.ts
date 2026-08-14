@@ -35,4 +35,8 @@ export const productsController = {
     await productsService.deactivate(String(req.params.id));
     res.status(204).send();
   },
+  async getCategories(_req: Request, res: Response) {
+    const categories = await productsService.getCategories();
+    res.json({ categories });
+  },
 };

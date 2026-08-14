@@ -43,4 +43,8 @@ export const productsService = {
     if (!existing) throw new NotFoundError('Product not found');
     return productsRepository.deactivate(id);
   },
+
+  async getCategories() {
+  return productsRepository.listCategories();
+},
 };

@@ -25,6 +25,10 @@ productsRouter.get(
   asyncHandler(productsController.getOne),
 );
 
+productsRouter.get(
+  '/categories',
+  asyncHandler(productsController.getCategories),
+);
 // ─── Admin-only routes ─────────────────────────────────────────────────────────
 productsRouter.post(
   '/',

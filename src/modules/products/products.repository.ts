@@ -67,4 +67,13 @@ export const productsRepository = {
   deactivate(id: string) {
     return prisma.product.update({ where: { id }, data: { isActive: false } });
   },
+
+  async listCategories() {
+  const results = await prisma.product.groupBy({
+    by: ['category'],
+    where: { isActive: true },
+    _count: { _all: true },
+  });
+  return results.map((r) => ({ category: r.category, count: r._count._all }));
+},
 };
