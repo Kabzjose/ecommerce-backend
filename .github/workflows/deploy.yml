@@ -43,7 +43,8 @@ jobs:
       # 4. Generate Prisma definitions right before building so compilation checks pass
       - name: Install dependencies
         run: |
-           pnpm install --frozen-lockfile --config.only-built-dependencies=bcrypt,prisma,@prisma/client,@prisma/engines,esbuild
+           pnpm config set only-built-dependencies "bcrypt,prisma,@prisma/client,@prisma/engines,esbuild"
+           pnpm install --frozen-lockfile
            pnpm prisma generate
       - name: TypeScript compile check
         run: pnpm run build
