@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { kenyanPhoneSchema } from '../../lib/phone.js';
 
 export const checkoutSchema = z.object({
   body: z
@@ -8,7 +9,7 @@ export const checkoutSchema = z.object({
       dropoffZoneId: z.string().uuid(),
       dropoffAddress: z.string().min(5).max(255),
       paymentMethod: z.enum(['MPESA', 'CARD']),
-      payerPhone: z.string().regex(/^\+254\d{9}$/).optional(),
+      payerPhone: kenyanPhoneSchema.optional(),
       payerEmail: z.string().email().optional(),
     })
     .refine((d) => d.paymentMethod !== 'MPESA' || !!d.payerPhone, {

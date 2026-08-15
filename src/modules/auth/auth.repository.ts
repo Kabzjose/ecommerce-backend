@@ -7,6 +7,10 @@ export const authRepository = {
     return prisma.user.findUnique({ where: { email } });
   },
 
+  findUserByPhone(phone: string) {
+    return prisma.user.findUnique({ where: { phone } });
+  },
+
   findUserById(id: string) {
     return prisma.user.findUnique({ where: { id } });
   },

@@ -1,13 +1,12 @@
 import { z } from 'zod';
+import { kenyanPhoneSchema } from '../../lib/phone.js';
 
 // phone regex is scoped to Kenyan numbers (+254...); password.max(72) matches bcrypt's silent truncation boundary.
 export const registerSchema = z.object({
   body: z.object({
     name: z.string().min(2).max(100),
     email: z.string().email(),
-    phone: z
-      .string()
-      .regex(/^\+254\d{9}$/, 'Phone must be in format +254XXXXXXXXX'),
+    phone: kenyanPhoneSchema,
     password: z.string().min(8).max(72),
   }),
 });

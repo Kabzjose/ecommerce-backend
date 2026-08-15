@@ -1,13 +1,14 @@
 import { z } from 'zod';
+import { kenyanPhoneSchema } from '../../lib/phone.js';
 
 export const createBookingSchema = z.object({
   body: z
     .object({
       recipientName: z.string().min(2).max(100),
-      recipientPhone: z.string().regex(/^\+254\d{9}$/, 'Phone must be in format +254XXXXXXXXX'),
+      recipientPhone: kenyanPhoneSchema,
       paymentMethod: z.enum(['MPESA', 'CARD']),
       // payerPhone only required for MPESA, payerEmail only for CARD — enforced by .refine() below
-      payerPhone: z.string().regex(/^\+254\d{9}$/, 'Phone must be in format +254XXXXXXXXX').optional(),
+      payerPhone: kenyanPhoneSchema.optional(),
       payerEmail: z.string().email().optional(),
       pickupZoneId: z.string().uuid(),
       pickupAddress: z.string().min(5).max(255),

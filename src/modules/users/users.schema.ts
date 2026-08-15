@@ -1,10 +1,11 @@
 import { z } from 'zod';
+import { kenyanPhoneSchema } from '../../lib/phone.js';
 
 export const createUserByAdminSchema = z.object({
   body: z.object({
     name: z.string().min(2).max(100),
     email: z.string().email(),
-    phone: z.string().regex(/^\+254\d{9}$/, 'Phone must be in format +254XXXXXXXXX'),
+    phone: kenyanPhoneSchema,
     password: z.string().min(8).max(72),
     // CUSTOMER is intentionally excluded — that role is self-registration only via /api/auth/register
     role: z.enum(['RIDER', 'ADMIN']),

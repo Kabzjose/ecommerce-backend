@@ -26,6 +26,21 @@ export function errorHandler(
     return;
   }
 
+  // Handle Prisma unique constraint violations (P2002)
+  if (err && typeof err === 'object' && 'code' in err && (err as { code: string }).code === 'P2002') {
+    const meta = (err as { meta?: { target?: string[] | string } }).meta;
+    const targetArray = Array.isArray(meta?.target) ? meta.target : typeof meta?.target === 'string' ? [meta.target] : [];
+    const fieldName = targetArray.length > 0 ? targetArray[0] : 'field';
+    
+    res.status(409).json({
+      error: {
+        message: `An account with this ${fieldName} already exists`,
+        fields: { [fieldName]: [`This ${fieldName} is already registered`] },
+      },
+    });
+    return;
+  }
+
   // Unknown error — log the full details but never expose internals to the client.
   logger.error({ err }, 'Unhandled error');
   res.status(500).json({ error: { message: 'An unexpected error occurred' } });

@@ -30,9 +30,14 @@ async function issueTokenPair(
 
 export const authService = {
   async register(input: RegisterInput) {
-    const existing = await authRepository.findUserByEmail(input.email);
-    if (existing) {
+    const existingEmail = await authRepository.findUserByEmail(input.email);
+    if (existingEmail) {
       throw new ConflictError('An account with this email already exists');
+    }
+
+    const existingPhone = await authRepository.findUserByPhone(input.phone);
+    if (existingPhone) {
+      throw new ConflictError('An account with this phone number already exists');
     }
 
     const passwordHash = await bcrypt.hash(input.password, SALT_ROUNDS);
