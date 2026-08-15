@@ -47,16 +47,7 @@
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
-  },
-
-    "pnpm": {
-    "onlyBuiltDependencies": [
-      "bcrypt",
-      "prisma",
-      "@prisma/client",
-      "@prisma/engines",
-      "esbuild"
-    ]
   }
 
+  
 }
