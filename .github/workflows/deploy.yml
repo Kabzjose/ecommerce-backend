@@ -24,6 +24,8 @@ jobs:
       # 2. Tell the pnpm setup action to match your local v11 structure precisely
       - name: Install pnpm
         uses: pnpm/action-setup@v4
+        with:
+          version: 9.14.10
        
 
       # 3. Dynamic lookup of the store directory to ensure correct caching paths
