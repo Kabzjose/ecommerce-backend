@@ -12,7 +12,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@11.18.0",
+  "packageManager": "pnpm@9.14.10",
   "dependencies": {
     "@prisma/client": "5.20.0",
     "bcrypt": "^6.0.0",
@@ -47,16 +47,6 @@
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
-  },
-  "pnpm": {
-  "onlyBuiltDependencies": [
-    "@prisma/client",
-    "@prisma/engines",
-    "bcrypt",
-    "esbuild",
-    "prisma"
-  ]
-}
-
+  }
   
 }
