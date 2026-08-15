@@ -15,21 +15,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 1. Update to Node 22 to remain fully compliant with Github Actions runners
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
 
-      # 2. Tell the pnpm setup action to match your local v11 structure precisely
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9.14.10
-        env:
-          COREPACK_INTEGRITY_KEYS: '0'
+      - name: Enable Corepack and install pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.14.10 --activate
 
-      # 3. Dynamic lookup of the store directory to ensure correct caching paths
       - name: Get pnpm store directory
         id: pnpm-cache
         shell: bash
@@ -43,11 +38,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-
 
-      # 4. Generate Prisma definitions right before building so compilation checks pass
       - name: Install dependencies
-        run: |
-           pnpm install --frozen-lockfile
-           pnpm prisma generate
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: pnpm prisma generate
+
       - name: TypeScript compile check
         run: pnpm run build
 
@@ -56,8 +52,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: lint-and-build
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-
     steps:
       - name: Trigger Render deploy
-        run: |
-          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
+        run: curl -f "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
