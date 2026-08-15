@@ -7,7 +7,6 @@ on:
     branches: [main]
 
 jobs:
-  # ── Run on every push and PR ──────────────────────────────────────────────────
   lint-and-build:
     name: Lint & Build
     runs-on: ubuntu-latest
@@ -16,35 +15,41 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # 1. Update to Node 22 to remain fully compliant with Github Actions runners
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
+      # 2. Tell the pnpm setup action to match your local v11 structure precisely
       - name: Install pnpm
-        uses: pnpm/action-setup@v3
+        uses: pnpm/action-setup@v4
         with:
-          version: 9
+          version: 11
 
+      # 3. Dynamic lookup of the store directory to ensure correct caching paths
       - name: Get pnpm store directory
         id: pnpm-cache
-        run: echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+        shell: bash
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
 
       - name: Cache pnpm dependencies
         uses: actions/cache@v4
         with:
-          path: ~/.local/share/pnpm/store/v11 
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-
 
+      # 4. Generate Prisma definitions right before building so compilation checks pass
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm prisma generate
 
       - name: TypeScript compile check
-        run: pnpm build
+        run: pnpm run build
 
-  # ── Deploy to Render — only on push to main, not on PRs ──────────────────────
   deploy:
     name: Deploy to Render
     runs-on: ubuntu-latest
