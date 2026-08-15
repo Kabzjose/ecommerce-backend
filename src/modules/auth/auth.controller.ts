@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
 import { authService } from './auth.service.js';
 import { usersRepository } from '../users/users.repository.js';
-import { env } from '../../config/env.js';
+
 
 const REFRESH_COOKIE_NAME = 'refreshToken';
 
@@ -9,9 +9,8 @@ const REFRESH_COOKIE_NAME = 'refreshToken';
 function setRefreshCookie(res: Response, token: string): void {
   res.cookie(REFRESH_COOKIE_NAME, token, {
     httpOnly: true,
-    secure: env.NODE_ENV === 'production',
-    sameSite: 'strict',
-    domain: env.COOKIE_DOMAIN,
+    secure: true,
+    sameSite: 'none',
     path: '/api/auth',
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
@@ -43,7 +42,7 @@ export const authController = {
   async logout(req: Request, res: Response) {
     const token = req.cookies?.[REFRESH_COOKIE_NAME];
     if (token) await authService.logout(token);
-    res.clearCookie(REFRESH_COOKIE_NAME, { path: '/api/auth' });
+    res.clearCookie(REFRESH_COOKIE_NAME, { path: '/api/auth', secure: true, sameSite: 'none' });
     res.status(204).send();
   },
 
