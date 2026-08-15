@@ -12,7 +12,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@11.18.0",
   "dependencies": {
     "@prisma/client": "5.20.0",
     "bcrypt": "^6.0.0",
