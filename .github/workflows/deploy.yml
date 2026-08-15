@@ -20,10 +20,8 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Enable Corepack and install pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@9.14.10 --activate
+      - name: Install pnpm
+        run: npm install -g pnpm@9
 
       - name: Get pnpm store directory
         id: pnpm-cache
