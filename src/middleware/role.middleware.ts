@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from 'express';
 import type { Role } from '@prisma/client';
-iport { ForbiddenError, UnauthorizedError } from '../lib/errors.js';
+import { ForbiddenError, UnauthorizedError } from '../lib/errors.js';
 
 export function requireRole(...allowedRoles: Role[]) {
   return (req: Request, _res: Response, next: NextFunction) => {
