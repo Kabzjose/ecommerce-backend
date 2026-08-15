@@ -43,7 +43,7 @@ jobs:
       # 4. Generate Prisma definitions right before building so compilation checks pass
       - name: Install dependencies
         run: |
-          pnpm install --frozen-lockfile --only-built-dependencies
+          pnpm install --frozen-lockfile 
           pnpm prisma generate
 
       - name: TypeScript compile check
