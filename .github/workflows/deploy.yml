@@ -26,7 +26,8 @@ jobs:
         uses: pnpm/action-setup@v4
         with:
           version: 9.14.10
-       
+        env:
+          COREPACK_INTEGRITY_KEYS: '0'
 
       # 3. Dynamic lookup of the store directory to ensure correct caching paths
       - name: Get pnpm store directory
