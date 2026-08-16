@@ -11,6 +11,7 @@ paymentsRouter.post('/mpesa/callback', asyncHandler(paymentsController.mpesaCall
 // Public — Paystack calls this; signature verified inside the handler
 paymentsRouter.post('/paystack/webhook', asyncHandler(paymentsController.paystackWebhook));
 
+paymentsRouter.get('/paystack/status', requireAuth, asyncHandler(paymentsController.getStatusByReference));
 // Authenticated — customer polling their own payment status
 paymentsRouter.get(
   '/booking/:bookingId',

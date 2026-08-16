@@ -1,6 +1,7 @@
 import type { Request, Response } from 'express';
 import { paymentsService } from './payments.service.js';
 import { verifyWebhookSignature } from '../../lib/paystack.js';
+import { BadRequestError } from '../../lib/errors.js';
 
 export const paymentsController = {
   /**
@@ -31,6 +32,13 @@ export const paymentsController = {
     await paymentsService.handlePaystackWebhook(req.body);
     res.status(200).send('OK');
   },
+  
+  async getStatusByReference(req: Request, res: Response) {
+  const reference = req.query.reference as string;
+  if (!reference) throw new BadRequestError('reference is required');
+  const result = await paymentsService.getStatusByReference(reference);
+  res.json(result);
+},
 
   async getStatus(req: Request, res: Response) {
     const payment = await paymentsService.getStatus(String(req.params.bookingId));

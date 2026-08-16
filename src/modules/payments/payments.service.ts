@@ -237,6 +237,13 @@ export const paymentsService = {
       logger.info({ bookingId: payment.bookingId, reference }, 'Card booking payment succeeded');
     }
   },
+  async getStatusByReference(reference: string) {
+  const payment = await paymentsRepository.findByPaystackReferenceWithOrder(reference);
+  if (!payment || !payment.order) {
+    throw new NotFoundError('Payment not found');
+  }
+  return { orderId: payment.order.id, status: payment.order.status };
+},
 
   async getStatus(bookingId: string) {
     const payment = await paymentsRepository.findByBookingId(bookingId);

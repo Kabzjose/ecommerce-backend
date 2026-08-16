@@ -74,4 +74,10 @@ export const paymentsRepository = {
       include: { booking: true, order: true },
     });
   },
+  findByPaystackReferenceWithOrder(reference: string) {
+  return prisma.payment.findUnique({
+    where: { paystackReference: reference },
+    include: { order: true },
+  });
+},
 };
