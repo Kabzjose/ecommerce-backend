@@ -5,7 +5,7 @@ export const checkoutSchema = z.object({
   body: z
     .object({
       recipientName: z.string().min(2).max(100),
-      recipientPhone: z.string().regex(/^\+254\d{9}$/, 'Phone must be in format +254XXXXXXXXX'),
+      recipientPhone: kenyanPhoneSchema,
       dropoffZoneId: z.string().uuid(),
       dropoffAddress: z.string().min(5).max(255),
       paymentMethod: z.enum(['MPESA', 'CARD']),
