@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { usersController } from './users.controller.js';
 import { validate } from '../../middleware/validate.middleware.js';
 import { asyncHandler } from '../../middleware/asyncHandler.js';
-import { requireAuth } from '../../middleware/auth.middleware .js';
+import { requireAuth } from '../../middleware/auth.middleware.js';
 import { requireRole } from '../../middleware/role.middleware.js';
 import { createUserByAdminSchema, listUsersQuerySchema } from './users.schema.js';
 
