@@ -10,7 +10,8 @@ export const ordersController = {
   },
 
   async listMine(req: Request, res: Response) {
-    const { page, limit } = req.query as unknown as { page: number; limit: number };
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 20;
     const skip = (page - 1) * limit;
     const [items, total] = await Promise.all([
       ordersRepository.listForCustomer(req.user!.id, skip, limit),
