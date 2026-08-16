@@ -92,6 +92,35 @@ async function main() {
       await prisma.product.create({ data: p });
     }
   }
+
+  // prisma/seed.ts — add this after your existing zone/route seeding
+
+const STORE_ZONE_NAME = 'CBD'; // whichever zone your store's pickup actually is
+
+const storeZone = await prisma.zone.findUnique({ where: { name: STORE_ZONE_NAME } });
+const allZones = await prisma.zone.findMany();
+
+if (storeZone) {
+  for (const zone of allZones) {
+    if (zone.id === storeZone.id) continue;
+
+    const existingRoute = await prisma.zoneRoute.findUnique({
+      where: { fromZoneId_toZoneId: { fromZoneId: storeZone.id, toZoneId: zone.id } },
+    });
+
+    if (!existingRoute) {
+      // Simple flat default — adjust pricing logic as you see fit
+      const defaultPrice = 250;
+      await prisma.zoneRoute.create({
+        data: { fromZoneId: storeZone.id, toZoneId: zone.id, price: defaultPrice },
+      });
+      await prisma.zoneRoute.create({
+        data: { fromZoneId: zone.id, toZoneId: storeZone.id, price: defaultPrice },
+      });
+    }
+  }
+  console.log(`✅ Ensured routes exist from ${STORE_ZONE_NAME} to every zone`);
+}
   console.log('✅ Seeded sample products');
 
   console.log('✅ Seeded zones and routes');
