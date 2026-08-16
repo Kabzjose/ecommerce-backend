@@ -33,10 +33,12 @@ export const paymentsController = {
     res.status(200).send('OK');
   },
   
-  async getStatusByReference(req: Request, res: Response) {
+ // payments.controller.ts
+async getStatusByReference(req: Request, res: Response) {
   const reference = req.query.reference as string;
   if (!reference) throw new BadRequestError('reference is required');
   const result = await paymentsService.getStatusByReference(reference);
+  res.set('Cache-Control', 'no-store');
   res.json(result);
 },
 
