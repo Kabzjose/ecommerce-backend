@@ -70,7 +70,7 @@ async function main() {
       price: 32999,
       stockQuantity: 40,
       category: 'Phones',
-      imageUrl: 'https://picsum.photos/seed/phone-galaxy-nova/600/600',
+      imageUrl: 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=800&auto=format&fit=crop&q=80',
     },
     {
       name: 'Pixel Lite 9',
@@ -78,7 +78,7 @@ async function main() {
       price: 45999,
       stockQuantity: 25,
       category: 'Phones',
-      imageUrl: 'https://picsum.photos/seed/phone-pixel-lite/600/600',
+      imageUrl: 'https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=800&auto=format&fit=crop&q=80',
     },
     {
       name: 'Infinix Note 40',
@@ -86,7 +86,7 @@ async function main() {
       price: 24999,
       stockQuantity: 60,
       category: 'Phones',
-      imageUrl: 'https://picsum.photos/seed/phone-infinix-note/600/600',
+      imageUrl: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800&auto=format&fit=crop&q=80',
     },
     {
       name: 'Tecno Spark 20',
@@ -94,7 +94,7 @@ async function main() {
       price: 15999,
       stockQuantity: 80,
       category: 'Phones',
-      imageUrl: 'https://picsum.photos/seed/phone-tecno-spark/600/600',
+      imageUrl: 'https://images.unsplash.com/photo-1565849904461-04a58ad377e0?w=800&auto=format&fit=crop&q=80',
     },
     {
       name: 'iPhone SE Classic',
@@ -102,7 +102,7 @@ async function main() {
       price: 54999,
       stockQuantity: 15,
       category: 'Phones',
-      imageUrl: 'https://picsum.photos/seed/phone-iphone-se/600/600',
+      imageUrl: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80',
     },
 
     // --- Tablets ---
@@ -112,7 +112,7 @@ async function main() {
       price: 38999,
       stockQuantity: 20,
       category: 'Tablets',
-      imageUrl: 'https://picsum.photos/seed/tablet-galaxy-tab/600/600',
+      imageUrl: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=800&auto=format&fit=crop&q=80',
     },
     {
       name: 'iPad 10th Gen',
@@ -120,7 +120,7 @@ async function main() {
       price: 52999,
       stockQuantity: 18,
       category: 'Tablets',
-      imageUrl: 'https://picsum.photos/seed/tablet-ipad-10th/600/600',
+      imageUrl: 'https://images.unsplash.com/photo-1561154464-82e9adf32764?w=800&auto=format&fit=crop&q=80',
     },
     {
       name: 'Lenovo Tab M11',
@@ -128,7 +128,7 @@ async function main() {
       price: 19999,
       stockQuantity: 35,
       category: 'Tablets',
-      imageUrl: 'https://picsum.photos/seed/tablet-lenovo-m11/600/600',
+      imageUrl: 'https://images.unsplash.com/photo-1585790050230-5dd28404ccb9?w=800&auto=format&fit=crop&q=80',
     },
     {
       name: 'Xiaomi Pad 6',
@@ -136,7 +136,7 @@ async function main() {
       price: 34999,
       stockQuantity: 22,
       category: 'Tablets',
-      imageUrl: 'https://picsum.photos/seed/tablet-xiaomi-pad/600/600',
+      imageUrl: 'https://images.unsplash.com/photo-1589739900243-4b52cd9b104e?w=800&auto=format&fit=crop&q=80',
     },
 
     // --- Laptops ---
@@ -146,7 +146,7 @@ async function main() {
       price: 68999,
       stockQuantity: 15,
       category: 'Laptops',
-      imageUrl: 'https://picsum.photos/seed/laptop-hp-pavilion/600/600',
+      imageUrl: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&auto=format&fit=crop&q=80',
     },
     {
       name: 'Lenovo IdeaPad Slim 3',
@@ -154,7 +154,7 @@ async function main() {
       price: 54999,
       stockQuantity: 20,
       category: 'Laptops',
-      imageUrl: 'https://picsum.photos/seed/laptop-lenovo-ideapad/600/600',
+      imageUrl: 'https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?w=800&auto=format&fit=crop&q=80',
     },
     {
       name: 'MacBook Air M2',
@@ -162,7 +162,7 @@ async function main() {
       price: 149999,
       stockQuantity: 8,
       category: 'Laptops',
-      imageUrl: 'https://picsum.photos/seed/laptop-macbook-air/600/600',
+      imageUrl: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&auto=format&fit=crop&q=80',
     },
     {
       name: 'Dell Inspiron 15',
@@ -170,7 +170,7 @@ async function main() {
       price: 89999,
       stockQuantity: 12,
       category: 'Laptops',
-      imageUrl: 'https://picsum.photos/seed/laptop-dell-inspiron/600/600',
+      imageUrl: 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80',
     },
     {
       name: 'ASUS Vivobook 14',
@@ -178,7 +178,7 @@ async function main() {
       price: 47999,
       stockQuantity: 25,
       category: 'Laptops',
-      imageUrl: 'https://picsum.photos/seed/laptop-asus-vivobook/600/600',
+      imageUrl: 'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80',
     },
 
     // --- TVs ---
@@ -188,7 +188,7 @@ async function main() {
       price: 27999,
       stockQuantity: 18,
       category: 'TVs',
-      imageUrl: 'https://picsum.photos/seed/tv-hisense-43/600/600',
+      imageUrl: 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=800&auto=format&fit=crop&q=80',
     },
     {
       name: 'Samsung 55" Crystal UHD',
@@ -196,7 +196,7 @@ async function main() {
       price: 64999,
       stockQuantity: 10,
       category: 'TVs',
-      imageUrl: 'https://picsum.photos/seed/tv-samsung-55/600/600',
+      imageUrl: 'https://images.unsplash.com/photo-1593784991095-a205069470b6?w=800&auto=format&fit=crop&q=80',
     },
     {
       name: 'LG 50" 4K UHD Smart TV',
@@ -204,7 +204,7 @@ async function main() {
       price: 54999,
       stockQuantity: 12,
       category: 'TVs',
-      imageUrl: 'https://picsum.photos/seed/tv-lg-50/600/600',
+      imageUrl: 'https://images.unsplash.com/photo-1461151304267-38535e780c79?w=800&auto=format&fit=crop&q=80',
     },
     {
       name: 'TCL 32" HD Smart TV',
@@ -212,7 +212,7 @@ async function main() {
       price: 15999,
       stockQuantity: 30,
       category: 'TVs',
-      imageUrl: 'https://picsum.photos/seed/tv-tcl-32/600/600',
+      imageUrl: 'https://images.unsplash.com/photo-1577979749830-f1d742b96791?w=800&auto=format&fit=crop&q=80',
     },
 
     // --- Woofers / Speakers ---
@@ -222,7 +222,7 @@ async function main() {
       price: 12999,
       stockQuantity: 40,
       category: 'Woofers',
-      imageUrl: 'https://picsum.photos/seed/woofer-sony-xb33/600/600',
+      imageUrl: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=800&auto=format&fit=crop&q=80',
     },
     {
       name: 'JBL PartyBox 110',
@@ -230,7 +230,7 @@ async function main() {
       price: 34999,
       stockQuantity: 15,
       category: 'Woofers',
-      imageUrl: 'https://picsum.photos/seed/woofer-jbl-partybox/600/600',
+      imageUrl: 'https://images.unsplash.com/photo-1545454675-3531b543be5d?w=800&auto=format&fit=crop&q=80',
     },
     {
       name: 'Sayona Home Theatre System',
@@ -238,7 +238,7 @@ async function main() {
       price: 8999,
       stockQuantity: 35,
       category: 'Woofers',
-      imageUrl: 'https://picsum.photos/seed/woofer-sayona-theatre/600/600',
+      imageUrl: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=800&auto=format&fit=crop&q=80',
     },
     {
       name: 'Vitron 10" Subwoofer System',
@@ -246,7 +246,7 @@ async function main() {
       price: 11999,
       stockQuantity: 28,
       category: 'Woofers',
-      imageUrl: 'https://picsum.photos/seed/woofer-vitron-10inch/600/600',
+      imageUrl: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800&auto=format&fit=crop&q=80',
     },
   ];
 
