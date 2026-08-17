@@ -128,7 +128,7 @@ async function main() {
       price: 19999,
       stockQuantity: 35,
       category: 'Tablets',
-      imageUrl: 'https://images.unsplash.com/photo-1585790050230-5dd28404ccb9?w=800&auto=format&fit=crop&q=80',
+      imageUrl: 'https://images.unsplash.com/photo-1527698266440-12104e498b76?w=800&auto=format&fit=crop&q=80',
     },
     {
       name: 'Xiaomi Pad 6',
@@ -136,7 +136,7 @@ async function main() {
       price: 34999,
       stockQuantity: 22,
       category: 'Tablets',
-      imageUrl: 'https://images.unsplash.com/photo-1589739900243-4b52cd9b104e?w=800&auto=format&fit=crop&q=80',
+      imageUrl: 'https://images.unsplash.com/photo-1628102491629-778571d893a3?w=800&auto=format&fit=crop&q=80',
     },
 
     // --- Laptops ---
@@ -222,7 +222,7 @@ async function main() {
       price: 12999,
       stockQuantity: 40,
       category: 'Woofers',
-      imageUrl: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=800&auto=format&fit=crop&q=80',
+      imageUrl: 'https://images.unsplash.com/photo-1545454675-3531b543be5d?w=800&auto=format&fit=crop&q=80',
     },
     {
       name: 'JBL PartyBox 110',
@@ -230,7 +230,7 @@ async function main() {
       price: 34999,
       stockQuantity: 15,
       category: 'Woofers',
-      imageUrl: 'https://images.unsplash.com/photo-1545454675-3531b543be5d?w=800&auto=format&fit=crop&q=80',
+      imageUrl: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=800&auto=format&fit=crop&q=80',
     },
     {
       name: 'Sayona Home Theatre System',
@@ -238,7 +238,7 @@ async function main() {
       price: 8999,
       stockQuantity: 35,
       category: 'Woofers',
-      imageUrl: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=800&auto=format&fit=crop&q=80',
+      imageUrl: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=800&auto=format&fit=crop&q=80',
     },
     {
       name: 'Vitron 10" Subwoofer System',
@@ -246,7 +246,7 @@ async function main() {
       price: 11999,
       stockQuantity: 28,
       category: 'Woofers',
-      imageUrl: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800&auto=format&fit=crop&q=80',
+      imageUrl: 'https://images.unsplash.com/photo-1543512214-318c7553f230?w=800&auto=format&fit=crop&q=80',
     },
   ];
 
