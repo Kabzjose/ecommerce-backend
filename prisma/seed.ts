@@ -238,7 +238,7 @@ async function main() {
       price: 8999,
       stockQuantity: 35,
       category: 'Woofers',
-      imageUrl: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=800&auto=format&fit=crop&q=80',
+      imageUrl: 'https://images.unsplash.com/photo-1558089687-f282ffcbc126?w=800&auto=format&fit=crop&q=80',
     },
     {
       name: 'Vitron 10" Subwoofer System',
@@ -246,7 +246,7 @@ async function main() {
       price: 11999,
       stockQuantity: 28,
       category: 'Woofers',
-      imageUrl: 'https://images.unsplash.com/photo-1543512214-318c7553f230?w=800&auto=format&fit=crop&q=80',
+      imageUrl: 'https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?w=800&auto=format&fit=crop&q=80',
     },
   ];
 
