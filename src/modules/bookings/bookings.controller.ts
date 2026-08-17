@@ -19,7 +19,7 @@ export const bookingsController = {
 
   async listMine(req: Request, res: Response) {
     // Validated query values come through as their coerced types after validate() middleware
-    const { status, page, limit } = req.query as unknown as {
+    const { status, page, limit } = req.validated!.query as {
       status?: BookingStatus;
       page: number;
       limit: number;

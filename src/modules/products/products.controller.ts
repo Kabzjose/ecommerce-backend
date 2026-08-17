@@ -15,18 +15,18 @@ export const productsController = {
   },
 
   async list(req: Request, res: Response) {
-    const { category, search, page, limit } = req.query as unknown as {
+    const { category, search, page, limit } = req.validated!.query as {
       category?: string;
       search?: string;
-      page?: string | number;
-      limit?: string | number;
+      page: number;
+      limit: number;
     };
     const isAdmin = req.user?.role === 'ADMIN';
     const result = await productsService.list({
       category,
       search,
-      page: Number(page) || 1,
-      limit: Number(limit) || 20,
+      page,
+      limit,
       asAdmin: isAdmin,
     });
     res.json(result);

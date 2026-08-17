@@ -10,7 +10,7 @@ export const adminController = {
   },
 
   async allRidersPerformance(req: Request, res: Response) {
-    const { page, limit } = req.query as unknown as { page: number; limit: number };
+    const { page, limit } = req.validated!.query as { page: number; limit: number };
     const result = await adminService.getAllRidersPerformance(page, limit);
     res.json(result);
   },
@@ -25,7 +25,7 @@ export const adminController = {
   },
 
   async revenue(req: Request, res: Response) {
-    const { days } = req.query as unknown as { period: string; days: number };
+    const { days } = req.validated!.query as { period: string; days: number };
     const revenue = await adminService.getRevenue(days);
     res.json({ revenue });
   },

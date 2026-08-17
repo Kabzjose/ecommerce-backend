@@ -9,7 +9,7 @@ export const usersController = {
   },
 
   async list(req: Request, res: Response) {
-    const { role, page, limit } = req.query as unknown as {
+    const { role, page, limit } = req.validated!.query as {
       role?: Role;
       page: number;
       limit: number;
