@@ -56,6 +56,7 @@ export const bookingsRepository = {
         dropoffZone: true,
         rider: { select: { id: true, name: true, phone: true } },
         statusHistory: { orderBy: { changedAt: 'asc' } },
+        order: { select: { id: true, totalAmount: true, productsTotal: true } },
       },
     });
   },
@@ -74,7 +75,11 @@ export const bookingsRepository = {
         ...(riderId && { riderId }),
         ...(status && { status }),
       },
-      include: { pickupZone: true, dropoffZone: true },
+      include: {
+        pickupZone: true,
+        dropoffZone: true,
+        order: { select: { id: true, totalAmount: true, productsTotal: true } },
+      },
       orderBy: { createdAt: 'desc' },
       skip,
       take,
