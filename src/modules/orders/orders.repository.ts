@@ -73,7 +73,9 @@ export const ordersRepository = {
   listForCustomer(customerId: string, skip: number, take: number) {
     return prisma.order.findMany({
       where: { customerId },
-      include: { items: { include: { product: true } } },
+      include: { items: true,
+      booking: { select: { status: true } },
+    },
       orderBy: { createdAt: 'desc' },
       skip,
       take,
