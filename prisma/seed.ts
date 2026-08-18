@@ -246,7 +246,7 @@ async function main() {
       price: 11999,
       stockQuantity: 28,
       category: 'Woofers',
-      imageUrl: 'https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?w=800&auto=format&fit=crop&q=80',
+      imageUrl: 'https://images.unsplash.com/photo-1597183739841-5ca26ab0a604?w=800&auto=format&fit=crop&q=80',
     },
   ];
 
