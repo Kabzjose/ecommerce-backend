@@ -35,30 +35,31 @@ This backend powers two connected systems:
 
 ## Project Structure
 
+```text
 src/
-├── config/ # env validation, Prisma client
-├── lib/ # external integrations (mpesa, paystack, sms, socket, token, logger, phone)
-├── middleware/ # auth, role, validation, error handling
+├── config/           # Env validation, Prisma client
+├── lib/              # External integrations (M-Pesa, Paystack, SMS, Socket, token, logger, phone)
+├── middleware/       # Auth, role, validation, error handling
 ├── modules/
-│ ├── auth/
-│ ├── users/
-│ ├── bookings/
-│ ├── pricing/
-│ ├── payments/
-│ ├── notifications/
-│ ├── admin/
-│ ├── products/
-│ ├── cart/
-│ ├── checkout/
-│ └── orders/
-├── types/ # Express type extensions
-├── app.ts # Express app setup
-└── server.ts # entrypoint (HTTP + WebSocket)
+│   ├── auth/
+│   ├── users/
+│   ├── bookings/
+│   ├── pricing/
+│   ├── payments/
+│   ├── notifications/
+│   ├── admin/
+│   ├── products/
+│   ├── cart/
+│   ├── checkout/
+│   └── orders/
+├── types/            # Express type extensions
+├── app.ts            # Express app setup
+└── server.ts         # Entrypoint (HTTP + WebSocket)
 prisma/
-├── schema.prisma
-├── migrations/
-└── seed.ts
-
+├── schema.prisma     # Prisma schema & data models
+├── migrations/       # SQL migration files
+└── seed.ts           # Database seed script
+```
 
 Each module follows a consistent layered pattern: `*.routes.ts → *.controller.ts → *.service.ts → *.repository.ts`, with `*.schema.ts` for Zod validation.
 
